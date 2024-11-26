@@ -374,7 +374,6 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
         </script>
 
-        <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 
 
         <script>
@@ -497,9 +496,9 @@
 
 
         </script>
-        <script>
+        {{-- <script>
             $('#myTable').DataTable({
-                data: data,
+
                 columns: [{
                         "data": "no"
                     },
@@ -562,9 +561,9 @@
                     zeroRecords: "No matching records found"
                 }
             });
-        </script>
-
-        </script>
+        </script> --}}
+        {{--
+        </script> --}}
 
 
     @endsection

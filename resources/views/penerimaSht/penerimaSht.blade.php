@@ -242,43 +242,10 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
         </script>
 
-        <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 
 
-        <script>
-            // Ambil elemen tombol dan container input
-            const showUploadFieldsButton = document.getElementById('showUploadFieldsButton');
-            const uploadFields = document.getElementById('uploadFields');
 
-            // Event ketika tombol 'Klik untuk Upload' ditekan
-            showUploadFieldsButton.addEventListener('click', function() {
-                // Tampilkan input No SPP dan tombol Upload
-                uploadFields.style.display = 'block';
 
-                // Sembunyikan tombol 'Klik untuk Upload'
-                showUploadFieldsButton.style.display = 'none';
-            });
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const yearSelect = document.getElementById('yearSelect');
-                const criteriaSelect = document.getElementById('criteriaSelect');
-
-                // Fungsi untuk mengubah criteria menjadi "Tanggal Pensiun" saat year terisi
-                function autoSelectCriteria() {
-                    // Jika year terisi dan criteria belum dipilih atau bukan "Tanggal Pensiun"
-                    if (yearSelect.value !== '' && criteriaSelect.value === '') {
-                        criteriaSelect.value = 'bulan'; // Mengubah criteria ke "Tanggal Pensiun"
-                    }
-                }
-
-                // Listener untuk perubahan pada dropdown year
-                yearSelect.addEventListener('change', autoSelectCriteria);
-
-                // Memastikan saat page load juga melakukan cek
-                autoSelectCriteria();
-            });
-        </script>
         <script>
             // Auto-submit form when "Items per page" is changed
             document.getElementById('perPage').addEventListener('change', function() {
@@ -310,53 +277,7 @@
                 document.getElementById('filterForm').submit();
             });
         </script>
-        <script>
-            // Enable or disable the upload button based on year, month, and status selection
-            document.addEventListener('DOMContentLoaded', function() {
-                var yearSelect = document.querySelector('select[name="year"]');
-                var monthSelect = document.querySelector('select[name="month"]'); // Menambahkan bulan
-                var statusSelect = document.querySelector(
-                    'select[name="status"]'); // Menggunakan dropdown select untuk status
-                var uploadButton = document.getElementById('uploadButton');
-                var errorMessage = document.getElementById('errorMessage'); // Elemen untuk menampilkan pesan error
 
-                // Function to check if year, month, and status are selected
-                function toggleUploadButton() {
-                    var yearSelected = yearSelect.value !== '';
-                    var monthSelected = monthSelect.value !== ''; // Menambahkan pengecekan bulan
-                    var statusSelected = statusSelect.value !== ''; // Memeriksa apakah status telah dipilih
-
-                    // Reset error message
-                    errorMessage.textContent = '';
-
-                    // Logic to show error messages
-                    if (!yearSelected) {
-                        errorMessage.textContent = "Mohon Mengisi Tahun";
-                        uploadButton.disabled = true;
-                    } else if (!statusSelected) {
-                        errorMessage.textContent = "Mohon Mengisi Status";
-                        uploadButton.disabled = true;
-                    } else if (!monthSelected) {
-                        errorMessage.textContent = "Yakin Tidak Mengisi Bulan ?";
-                        uploadButton.disabled = false; // Tetap mengizinkan upload jika bulan kosong
-                    } else {
-                        uploadButton.disabled = false; // Enable upload button when all are selected
-                    }
-                }
-
-                // Event listener for year selection
-                yearSelect.addEventListener('change', toggleUploadButton);
-
-                // Event listener for month selection
-                monthSelect.addEventListener('change', toggleUploadButton);
-
-                // Event listener for status selection
-                statusSelect.addEventListener('change', toggleUploadButton);
-
-                // Initial check when page is loaded
-                toggleUploadButton();
-            });
-        </script>
 
 
         <!-- Error Message Element -->
@@ -365,7 +286,7 @@
 
 
         </script>
-        <script>
+        {{-- <script>
             $('#myTable').DataTable({
                 data: data,
                 columns: [{
@@ -426,7 +347,7 @@
             });
         </script>
 
-        </script>
+        </script> --}}
 
 
     @endsection
