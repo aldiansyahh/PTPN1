@@ -22,7 +22,7 @@ class ShtImport implements ToModel
             return null;
         }
 
-        // Mengonversi tanggal Excel ke format YYYY-MM-DD
+        // Mengonversi tanggal Excel ke format DD/MM/YYYY
         $tgl_lahir = $this->transformDate($row[3]);
         $tgl_masuk = $this->transformDate($row[4]);
         $bulan = $this->transformDate($row[11]);
@@ -46,7 +46,7 @@ class ShtImport implements ToModel
     }
 
     /**
-     * Mengubah serial date dari Excel ke format tanggal (YYYY-MM-DD).
+     * Mengubah serial date dari Excel ke format tanggal (DD/MM/YYYY).
      *
      * @param mixed $excelDate
      * @return string|null
@@ -54,8 +54,17 @@ class ShtImport implements ToModel
     private function transformDate($excelDate)
     {
         if (is_numeric($excelDate)) {
+            // Jika tanggal berbentuk serial number dari Excel
             return Date::excelToDateTimeObject($excelDate)->format('Y-m-d');
+        } elseif (is_string($excelDate)) {
+            // Jika tanggal berupa string (contoh: dd/mm/yyyy)
+            $date = \DateTime::createFromFormat('d/m/Y', $excelDate);
+            if ($date) {
+                return $date->format('Y-m-d'); // Ubah ke format yang sesuai untuk MySQL
+            }
         }
+
+        // Jika format tidak dikenali
         return null;
     }
 }

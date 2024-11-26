@@ -83,8 +83,10 @@ class ShtController extends Controller
         $months = Sht::selectRaw('MONTH(bulan) as month')
             ->distinct()
             ->pluck('month')
+            ->filter() // Menghapus nilai null atau kosong
             ->map(function ($month) {
-                return DateTime::createFromFormat('!m', $month)->format('F');
+                $date = DateTime::createFromFormat('!m', $month);
+                return $date ? $date->format('F') : 'Invalid Month';
             })
             ->sort();
 
@@ -192,18 +194,6 @@ class ShtController extends Controller
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public function generatePdf(Request $request)
     {
         $year = $request->get('year');
@@ -222,7 +212,7 @@ class ShtController extends Controller
 
         // Filter berdasarkan bulan
         if ($month) {
-            $monthNumber = date('m', strtotime($month));
+            $monthNumber = date('m', strtotime("1 $month"));
             $query->whereMonth('bulan', $monthNumber);
         }
 
@@ -246,26 +236,35 @@ class ShtController extends Controller
             }
         }
 
-        // Mengambil data yang sesuai dengan filter
-        $shtData = $query->first(); // Ambil data pertama, untuk no_spp dan detail lainnya
-
-        // Periksa apakah no_spp ada atau tidak
+        // Mengambil data pertama untuk no_spp
+        $shtData = $query->first();
         $no_spp = $shtData && $shtData->no_spp ? $shtData->no_spp : 'Belum Dibuat';
 
-        // Menghitung total dari kedua tabel sesuai dengan filter yang diterapkan
-        $totalNilaiManfaat = Sht::whereYear('bulan', $year)
-            ->when($month, fn($q) => $q->whereMonth('bulan', $monthNumber))
-            ->sum('jumlah_sht');
-
-        $totalLunasManfaat = Sht::where('keterangan', 'Lunas')
+        // Hitung total nilai manfaat
+        $totalData = Sht::selectRaw("
+        SUM(CASE WHEN keterangan = 'Lunas' THEN jumlah_sht ELSE 0 END) as totalLunas,
+        SUM(CASE WHEN keterangan = 'Proses Rekon' THEN jumlah_sht ELSE 0 END) as totalRekon,
+        SUM(jumlah_sht) as totalNilai
+    ")
             ->whereYear('bulan', $year)
             ->when($month, fn($q) => $q->whereMonth('bulan', $monthNumber))
-            ->sum('jumlah_sht');
+            ->first();
 
-        $totalRekonManfaat = Sht::where('keterangan', 'Proses Rekon')
+        $totalNilaiManfaat = $totalData->totalNilai;
+        $totalLunasManfaat = $totalData->totalLunas;
+        $totalRekonManfaat = $totalData->totalRekon;
+
+        // Rekap bulanan
+        $rekapPerBulan = Sht::selectRaw('MONTH(bulan) as bulan,
+                 SUM(CASE WHEN keterangan = "Lunas" THEN jumlah_sht ELSE 0 END) as sudah_dibayar,
+                 SUM(CASE WHEN keterangan = "Proses Rekon" THEN jumlah_sht ELSE 0 END) as belum_dibayar,
+                 SUM(jumlah_sht) as total_yang_harus_dibayar')
             ->whereYear('bulan', $year)
             ->when($month, fn($q) => $q->whereMonth('bulan', $monthNumber))
-            ->sum('jumlah_sht');
+            ->groupBy('bulan')
+            ->orderBy('bulan') // Mengurutkan berdasarkan bulan (dari Januari ke Desember)
+            ->get();
+
 
         // Data untuk PDF
         $data = [
@@ -274,15 +273,16 @@ class ShtController extends Controller
             'totalRekonManfaat' => $totalRekonManfaat,
             'year' => $year,
             'month' => $month,
-            'no_spp' => $no_spp, // Menambahkan no_spp
+            'no_spp' => $no_spp,
+            'rekapPerBulan' => $rekapPerBulan,
         ];
 
-        // Generate PDF menggunakan view dan data
+        // Generate PDF
         $pdf = Pdf::loadView('Sht.pdf_file', $data);
 
-        // Mendownload file PDF
         return $pdf->download('laporan_pembayaran.pdf');
     }
+
 
 
 

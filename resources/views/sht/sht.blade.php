@@ -63,7 +63,7 @@
                                 <th class="text-center">Tahun</th>
                                 <th class="text-center">Sudah Dibayar</th>
                                 <th class="text-center">Belum Dibayar</th>
-                                <th class="text-center">Yang Harus Dibayar</th>
+                                <th class="text-center">Total Tagihan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,7 +74,7 @@
                                     <td class="text-right">Rp{{ number_format($rekap->belum_dibayar, 0, ',', '.') }}</td>
                                     <td class="text-right">
                                         Rp{{ number_format($rekap->total_yang_harus_dibayar, 0, ',', '.') }}</td>
-                                    <td></td> <!-- Kosong karena total akan ditampilkan di baris akhir -->
+
                                 </tr>
                             @empty
                                 <tr>
@@ -228,15 +228,6 @@
                                 <option value="nomor_pegawai"
                                     {{ request('criteria') == 'nomor_pegawai' ? 'selected' : '' }}>No Register</option>
                                 <option value="nama" {{ request('criteria') == 'nama' ? 'selected' : '' }}>Nama</option>
-                                <option value="mkg" {{ request('criteria') == 'mkg' ? 'selected' : '' }}>MKG</option>
-                                <option value="gol" {{ request('criteria') == 'gol' ? 'selected' : '' }}>Golongan
-                                </option>
-                                <option value="jabatan" {{ request('criteria') == 'jabatan' ? 'selected' : '' }}>Jabatan
-                                </option>
-                                <option value="kebun" {{ request('criteria') == 'kebun' ? 'selected' : '' }}>Kebun
-                                </option>
-                                <option value="jenis_pensiun"
-                                    {{ request('criteria') == 'jenis_pensiun' ? 'selected' : '' }}>Jenis Pensiun</option>
                                 <option value="bulan" {{ request('criteria') == 'bulan' ? 'selected' : '' }}>Tanggal
                                     Pensiun</option>
                                 <option value="periode_pensiun"
@@ -366,7 +357,7 @@
 
                             <!-- Next Page Link -->
                             @if ($sht->hasMorePages())
-                                <a href="{{ $sht->nextPageUrl() }}&criteria={{ request('criteria') }}&search={{ request('search') }}&perPage={{ request('perPage') }}"
+                                <a href="{{ $sht->nextPageUrl() }}&criteria={{ request('criteria') }}&search={{ request('search') }}&perPage={{ request('perPage', 10) }}"
                                     class="pagination-link btn btn-secondary pr-4 pl-4">
                                     Next
                                 </a>

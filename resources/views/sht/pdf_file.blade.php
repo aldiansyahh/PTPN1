@@ -63,7 +63,7 @@
 
     <table class="content mt-2 mb-2">
         <tr class="mt-2 mb-2">
-            <th>Total yang Harus Dibayarkan</th>
+            <th>Total Tagihan</th>
             <td>Rp{{ number_format($totalNilaiManfaat, 0, ',', '.') }}</td>
         </tr>
         <tr class="mt-2 mb-2">
@@ -76,6 +76,11 @@
         </tr>
 
     </table>
+    <div class="date">
+        <br><br><br>
+        <br><br>Bandung, {{ date('d F Y') }} <!-- Menampilkan tanggal saat ini -->
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     @if (!empty($rekapPerBulan) && count($rekapPerBulan) > 0)
         <table class="content">
             <thead>
@@ -83,7 +88,7 @@
                     <th>Bulan</th>
                     <th>Sudah Dibayarkan</th>
                     <th>Belum Dibayarkan</th>
-                    <th>Total yang Harus Dibayarkan</th>
+                    <th>Total Tagihan</th>
                 </tr>
             </thead>
             <tbody>
@@ -96,10 +101,14 @@
                     </tr>
                 @endforeach
             </tbody>
+
         </table>
     @else
         <p>Tidak ada data untuk rincian bulanan.</p>
     @endif
+
+
+
     <div class="date">
         <br><br><br>
         <br><br>Bandung, {{ date('d F Y') }} <!-- Menampilkan tanggal saat ini -->
